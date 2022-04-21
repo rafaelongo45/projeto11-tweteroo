@@ -27,8 +27,6 @@ app.post('/tweets', (req, res) => {
       return user.username ===req.body.username
   })
 
-  console.log(userAvatar)
-
   tweets.push({
     username:  req.body.username,
     avatar: userAvatar.avatar,
@@ -39,6 +37,14 @@ app.post('/tweets', (req, res) => {
 })
 
 app.get('/tweets', (req, res) => {
+  if(tweets.length > 10){
+    let newArr = [];
+    for(let i = 1; i < 11; i++){
+      newArr.push(tweets[i]);
+    }
+
+    tweets = newArr;
+  }
   res.send(tweets);
 })
 
