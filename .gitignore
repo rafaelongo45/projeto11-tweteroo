@@ -4,6 +4,7 @@
 /node_modules
 /front-end
 /.pnp
+/tweteroo-bonus
 .pnp.js
 
 # testing

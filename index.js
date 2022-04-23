@@ -1,39 +1,50 @@
 import express from "express"
 import cors from "cors"
 import chalk from "chalk";
-import bodyParser from "body-parser";
 
 let users = [];
 let tweets = [];
 
 const app = express();
-app.use(bodyParser());
+app.use(express.json());
 app.use(cors());
 
 app.post('/sign-up', (req, res) => {
   const {username, avatar} = req.body;
 
-  users.push({
-    username: username,
-    avatar: avatar
-  })
+  if(username.length === 0 || avatar.length === 0){
+    res.status(400).send("Todos os campos são obrigatórios!")
+  }else{
+    users.push({
+      username: username,
+      avatar: avatar
+    })
+  
+    res.status(201).send("Ok")
+  }
 
-  res.send("Ok")
 });
 
 
 app.post('/tweets', (req, res) => {
-  const userAvatar = users.find(user => {
-      return user.username ===req.body.username
+  const {user} = req.headers;
+
+  const userAvatar = users.find(profile => {
+      return profile.username === user
   })
 
-  tweets.push({
-    username:  req.body.username,
-    avatar: userAvatar.avatar,
-    tweet:  req.body.tweet
-  })
+  if(user.length === 0 || req.body.tweet.length === 0){
+    res.status(400).send("Todos os campos são obrigatórios!")
+  }else{
+    tweets.push({
+      username:  user,
+      avatar: userAvatar.avatar,
+      tweet:  req.body.tweet
+    })
+  
+    res.status(201).send("Ok")
+  }
 
-  res.send("Ok")
 })
 
 app.get('/tweets', (req, res) => {
@@ -42,7 +53,7 @@ app.get('/tweets', (req, res) => {
     for(let i = 1; i < 11; i++){
       newArr.push(tweets[i]);
     }
-
+    
     tweets = newArr;
   }
   res.send(tweets);
