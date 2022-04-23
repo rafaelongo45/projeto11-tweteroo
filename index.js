@@ -59,5 +59,15 @@ app.get('/tweets', (req, res) => {
   res.send(tweets);
 })
 
+app.get('/tweets/:userProfileName', (req, res) => {
+  const {userProfileName} = req.params
+  
+  const userTweets = tweets.filter((tweet => {
+    return tweet.username === userProfileName;
+  }));
+
+  res.send(userTweets);
+})
+
 
 app.listen(5000, ()=>console.log(chalk.bold.green("Iniciado na porta 5000")));
