@@ -12,6 +12,14 @@ app.use(cors());
 app.post('/sign-up', (req, res) => {
   const {username, avatar} = req.body;
 
+  if(users !== 0){
+    users.forEach((profile) => {
+      if(profile.username === username){
+        res.status(409).send("Usuário já cadastrado!")
+      }
+    })
+  }
+
   if(username.length === 0 || avatar.length === 0){
     res.status(400).send("Todos os campos são obrigatórios!")
   }else{
@@ -36,7 +44,7 @@ app.post('/tweets', (req, res) => {
   if(user.length === 0 || req.body.tweet.length === 0){
     res.status(400).send("Todos os campos são obrigatórios!")
   }else{
-    tweets.push({
+    tweets.unshift({
       username:  user,
       avatar: userAvatar.avatar,
       tweet:  req.body.tweet
@@ -48,14 +56,17 @@ app.post('/tweets', (req, res) => {
 })
 
 app.get('/tweets', (req, res) => {
+  const {page} = req.query;
+
   if(tweets.length > 10){
     let newArr = [];
-    for(let i = 1; i < 11; i++){
+    for(let i = 0; i < 10; i++){
       newArr.push(tweets[i]);
     }
     
     tweets = newArr;
   }
+  
   res.send(tweets);
 })
 
